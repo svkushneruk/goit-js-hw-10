@@ -1,16 +1,20 @@
 import './css/styles.css';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { refs } from './js/refs';
+import debounce from 'lodash.debounce';
 import { fetchCountries } from './js/fetchCountries';
 
 const DEBOUNCE_DELAY = 300;
 
-refs.inputSearchEl.addEventListener('input', onSearch);
+refs.inputSearchEl.addEventListener(
+  'input',
+  debounce(onSearch, DEBOUNCE_DELAY)
+);
 
-function onSearch(e) {
+function onSearch() {
   refs.countryInfoEl.textContent = '';
   refs.countryListEl.textContent = '';
-  let str = e.currentTarget.value.trim();
+  let str = refs.inputSearchEl.value.trim();
   if (str === '') {
     return;
   }
@@ -46,9 +50,9 @@ function onSearch(e) {
               })
               .join(', ');
             return `
-                <p><span><b>Capital:</b></span> ${country.name}</p>     
-                <p><span><b>Population:</b></span> ${country.population}</p>     
-                <p><span><b>Capital:</b></span> ${list}</p> 
+                <p><span><b>Capital:</b></span> ${country.name}</p>
+                <p><span><b>Population:</b></span> ${country.population}</p>
+                <p><span><b>Capital:</b></span> ${list}</p>
                 `;
           });
           refs.countryInfoEl.insertAdjacentHTML('beforeend', infoTempale);
